@@ -1,0 +1,52 @@
+#include <iostream>
+#include <vector>
+#include <unordered_map>
+
+int find_current_index_member_index(std::vector<char>& old_queue, int current_index, std::vector<char>& new_queue) {
+    // Create a map to store the indices of each member in the old queue
+    std::unordered_map<char, std::vector<int>> member_index_map;
+    for (int i = 0; i < old_queue.size(); ++i) {
+        member_index_map[old_queue[i]].push_back(i);
+    }
+
+    // Find the indices of the Current Index Member in the old queue
+    char current_member = old_queue[current_index];
+    std::vector<int> current_member_indices = member_index_map[current_member];
+
+    // Find the index of the Current Index Member in the new queue
+    int new_current_index = -1;
+    for (int i = 0; i < new_queue.size(); ++i) {
+        char member = new_queue[i];
+        if (member == current_member) {
+            // If the Current Index Member is still present in the new queue,
+            // update its index in the new queue
+            if (std::find(current_member_indices.begin(), current_member_indices.end(), i) != current_member_indices.end()) {
+                new_current_index = i;
+            }
+            // If the Current Index Member is not present in the new queue,
+            // find the index of the next available member
+            else {
+                for (int j = i + 1; j < new_queue.size(); ++j) {
+                    if (member_index_map.find(new_queue[j]) != member_index_map.end()) {
+                        new_current_index = member_index_map[new_queue[j]][0];
+                        break;
+                    }
+                }
+            }
+            break;
+        }
+    }
+
+    return new_current_index;
+}
+
+int main() {
+    std::vector<char> old_queue {'A', 'B', 'C', 'D', 'E', 'F', 'A', 'B', 'C', 'D', 'A', 'B', 'C', 'A', 'B', 'A'};
+    int current_index = 7;
+    std::vector<char> new_queue {'A', 'B', 'C', 'D', 'E', 'F', 'A', 'B', 'C', 'D', 'A', 'B', 'C', 'A', 'B', 'A'};
+
+    int new_current_index = find_current_index_member_index(old_queue, current_index, new_queue);
+    std::cout << "New current index: " << new_current_index << std::endl;
+
+    return 0;
+}
