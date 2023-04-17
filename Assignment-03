@@ -1,0 +1,53 @@
+#include <iostream>
+
+using namespace std;
+
+struct Node {
+    int data;
+    Node* next;
+};
+
+Node* createNode(int data) {
+    Node* newNode = new Node();
+    newNode->data = data;
+    newNode->next = NULL;
+    return newNode;
+}
+
+int getMiddle(Node* head) {
+    Node* slowPtr = head;
+    Node* fastPtr = head;
+    
+    while (fastPtr != NULL && fastPtr->next != NULL) {
+        slowPtr = slowPtr->next;
+        fastPtr = fastPtr->next->next;
+    }
+    
+    return slowPtr->data;
+}
+
+int main() {
+    int n;
+    cout << "Enter the number of nodes: ";
+    cin >> n;
+
+    Node* head = NULL;
+    Node* tail = NULL;
+
+    for (int i = 1; i <= n; i++) {
+        int data;
+        cout << "Enter the data for node " << i << ": ";
+        cin >> data;
+        Node* newNode = createNode(data);
+        if (head == NULL) {
+            head = tail = newNode;
+        } else {
+            tail->next = newNode;
+            tail = newNode;
+        }
+    }
+
+    cout << "The middle element is: " << getMiddle(head) << endl;
+
+    return 0;
+}
